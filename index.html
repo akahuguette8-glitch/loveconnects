@@ -1,0 +1,146 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#29172f">
+<title>LoveConnect ❤️</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#fff7fb;color:#29172f;font-family:Arial,sans-serif}
+header{background:#29172f;color:white;text-align:center;padding:25px 12px}
+header h1{color:#f3b5d3;margin:0;font-size:30px}
+header p{margin:8px 0 0}
+main{max-width:480px;margin:auto;padding:16px;padding-bottom:90px}
+.card{background:white;padding:20px;border-radius:20px;margin:15px 0;box-shadow:0 4px 16px #29172f12}
+h2{margin-top:5px}
+button,input,textarea{font:inherit;width:100%;padding:13px;margin:6px 0;border-radius:12px}
+button{border:0;background:#c12e76;color:white;font-weight:bold;cursor:pointer}
+.secondary{background:#29172f}
+input,textarea{border:1px solid #e6d2df}
+textarea{resize:vertical}
+.hidden{display:none}
+nav{position:fixed;bottom:0;left:0;right:0;background:white;display:flex;justify-content:space-around;padding:8px 0;box-shadow:0 -3px 15px #0001}
+nav button{width:auto;background:white;color:#c12e76;font-size:12px;padding:10px 5px}
+.avatar{height:180px;border-radius:16px;background:linear-gradient(135deg,#f6c7df,#d7b8ec);display:grid;place-items:center;font-size:75px}
+.center{text-align:center}
+.small{font-size:13px;color:#776b79}
+</style>
+</head>
+<body>
+<header>
+<h1>❤️ LoveConnect</h1>
+<p>Deux cœurs, une connexion.</p>
+</header>
+
+<main>
+<section id="home">
+<div class="card center">
+<h2>Bienvenue sur LoveConnect</h2>
+<p>Découvre de belles personnes et crée de nouvelles connexions.</p>
+<button onclick="show('register')">Créer mon compte</button>
+<button class="secondary" onclick="show('discover')">Découvrir les profils</button>
+<p class="small">Réservé aux personnes de 18 ans et plus.</p>
+</div>
+</section>
+
+<section id="register" class="hidden">
+<div class="card">
+<h2>Créer mon profil ❤️</h2>
+<input id="name" placeholder="Ton prénom">
+<input id="age" type="number" placeholder="Ton âge (18 ans minimum)">
+<input id="city" placeholder="Ta ville">
+<textarea id="bio" placeholder="Présente-toi..."></textarea>
+<button onclick="register()">Créer mon profil</button>
+</div>
+</section>
+
+<section id="discover" class="hidden">
+<h2>Découvrir ❤️</h2>
+<div class="card center">
+<div class="avatar" id="emoji">🌸</div>
+<h2 id="person">Camille, 25 ans</h2>
+<p id="cityPerson">Abidjan</p>
+<p id="description">J'aime les voyages et les belles rencontres.</p>
+<button onclick="like()">❤️ J'aime</button>
+<button class="secondary" onclick="next()">Passer</button>
+<p id="result"></p>
+</div>
+</section>
+
+<section id="matches" class="hidden">
+<div class="card">
+<h2>Mes Matchs 💕</h2>
+<p id="likes">Tes coups de cœur apparaîtront ici.</p>
+</div>
+</section>
+
+<section id="messages" class="hidden">
+<div class="card">
+<h2>Messages 💌</h2>
+<p>Tu pourras discuter avec tes Matchs lorsque la messagerie sera connectée.</p>
+</div>
+</section>
+
+<section id="profile" class="hidden">
+<div class="card">
+<h2>Mon profil 👤</h2>
+<p id="myprofile">Tu n'as pas encore créé ton profil.</p>
+<button onclick="show('register')">Modifier mon profil</button>
+</div>
+</section>
+</main>
+
+<nav>
+<button onclick="show('home')">🏠 Accueil</button>
+<button onclick="show('discover')">❤️ Découvrir</button>
+<button onclick="show('matches')">💕 Matchs</button>
+<button onclick="show('messages')">💬 Messages</button>
+<button onclick="show('profile')">👤 Profil</button>
+</nav>
+
+<script>
+const people=[
+ {name:"Camille",age:25,city:"Abidjan",bio:"J'aime les voyages et les belles rencontres.",emoji:"🌸"},
+ {name:"Sarah",age:27,city:"Yamoussoukro",bio:"Passionnée de musique et de cinéma.",emoji:"🌺"},
+ {name:"Julie",age:24,city:"Bouaké",bio:"J'aime découvrir de nouveaux endroits.",emoji:"🌷"}
+];
+let current=0;
+let liked=[];
+
+function show(id){
+ document.querySelectorAll("main section").forEach(s=>s.classList.add("hidden"));
+ document.getElementById(id).classList.remove("hidden");
+ if(id==="matches") document.getElementById("likes").textContent=
+ liked.length?liked.join(", "):"Tes coups de cœur apparaîtront ici.";
+}
+function register(){
+ const n=document.getElementById("name").value.trim();
+ const a=Number(document.getElementById("age").value);
+ const c=document.getElementById("city").value.trim();
+ const b=document.getElementById("bio").value.trim();
+ if(!n||!c||a<18){alert("Entre ton prénom, ta ville et un âge de 18 ans minimum.");return;}
+ document.getElementById("myprofile").textContent=n+", "+a+" ans — "+c+". "+b;
+ show("profile");
+}
+function render(){
+ const p=people[current];
+ document.getElementById("person").textContent=p.name+", "+p.age+" ans";
+ document.getElementById("cityPerson").textContent=p.city;
+ document.getElementById("description").textContent=p.bio;
+ document.getElementById("emoji").textContent=p.emoji;
+ document.getElementById("result").textContent="";
+}
+function like(){
+ const p=people[current].name;
+ if(!liked.includes(p))liked.push(p);
+ document.getElementById("result").textContent="❤️ "+p+" ajouté(e) à tes coups de cœur !";
+}
+function next(){
+ current=(current+1)%people.length;
+ render();
+}
+</script>
+</body>
+</html>
